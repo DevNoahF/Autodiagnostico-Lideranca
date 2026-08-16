@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Instrumento de Autodiagnóstico</title>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="container">
+        <h1 id="pageTitle">Carregando...</h1>
+      </div>
+    </header>
+
+    <main class="container">
+      <!-- Seção de apresentação -->
+      <section class="intro card" id="presentationSection">
+        <p>Carregando apresentação...</p>
+      </section>
+
+      <!-- Formulário de avaliação -->
+      <form class="survey-form" id="surveyForm">
+        <div id="dimensionsContainer">
+          <p>Carregando dimensões...</p>
+        </div>
+
+        <div class="actions">
+          <button type="submit" class="btn-submit">Calcular resultado</button>
+        </div>
+      </form>
+
+      <!-- Seção de resultados -->
+      <section class="card results-panel hidden" id="resultsPanel">
+        <div class="results-header">
+          <h2>Resultado por dimensão</h2>
+          <div class="result-actions">
+            <button class="btn-history" type="button" id="historyBtn">
+              Histórico (7 dias)
+            </button>
+            <button class="btn-pdf" type="button" onclick="window.print()">
+              Exportar para PDF
+            </button>
+          </div>
+        </div>
+
+        <div class="results-grid" id="resultsGrid">
+          <!-- Resultados renderizados aqui -->
+        </div>
+      </section>
+
+      <!-- Seção de recomendações -->
+      <section class="card recommendations hidden" id="recommendationsPanel">
+        <h2>Recomendações</h2>
+        <ul id="recommendationsList">
+          <!-- Recomendações renderizadas aqui -->
+        </ul>
+      </section>
+
+      <!-- Histórico de resultados (vazio) -->
+      <div class="card history-card" id="emptyHistoryCard">
+        <div class="results-header">
+          <h2>Histórico de resultados</h2>
+          <button class="btn-history" type="button" id="historyBtnEmpty">
+            Histórico (7 dias)
+          </button>
+        </div>
+        <div id="historyListEmpty" class="history-list"></div>
+      </div>
+
+      <!-- Painel do histórico -->
+      <section class="card history-card hidden" id="historyPanel">
+        <div class="results-header">
+          <h2>Histórico de resultados</h2>
+          <button class="btn-pdf" type="button" id="clearHistoryBtn">
+            Limpar histórico
+          </button>
+        </div>
+        <div id="historyList" class="history-list"></div>
+      </section>
+    </main>
+
+    <script src="/static/js/main.js"></script>
+  </body>
+</html>
