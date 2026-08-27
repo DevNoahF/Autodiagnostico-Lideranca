@@ -3,83 +3,88 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Instrumento de Autodiagnóstico</title>
+    <title>Formulario | Autodiagnóstico de Liderança</title>
     <link rel="stylesheet" href="/static/style.css" />
   </head>
   <body>
     <header class="topbar">
-      <div class="container">
-        <h1 id="pageTitle">Carregando...</h1>
+      <div class="container topbar-row">
+        <div>
+          <h1>Formulário de autodiagnóstico</h1>
+        </div>
+        <nav class="page-nav">
+          <a href="/projeto">Inicio</a>
+          <a href="/equipe">Sobre a Equipe</a>
+          <a href="/autodiagnostico" aria-current="page">Formulário</a>
+        </nav>
       </div>
     </header>
-
-    <main class="container">
-      <!-- Seção de apresentação -->
-      <section class="intro card" id="presentationSection">
-        <p>Carregando apresentação...</p>
-      </section>
-
-      <!-- Formulário de avaliação -->
-      <form class="survey-form" id="surveyForm">
-        <div id="dimensionsContainer">
-          <p>Carregando dimensões...</p>
-        </div>
-
-        <div class="actions">
-          <button type="submit" class="btn-submit">Calcular resultado</button>
-        </div>
-      </form>
-
-      <!-- Seção de resultados -->
-      <section class="card results-panel hidden" id="resultsPanel">
-        <div class="results-header">
-          <h2>Resultado por dimensão</h2>
-          <div class="result-actions">
-            <button class="btn-history" type="button" id="historyBtn">
-              Histórico (7 dias)
-            </button>
-            <button class="btn-pdf" type="button" onclick="window.print()">
-              Exportar para PDF
+    <main class="container content-main">
+      <section class="form-session">
+        <h2 id="pageTitle">Carregando...</h2>
+        <section class="intro card" id="presentationSection"></section>
+        <form class="survey-form" id="surveyForm">
+          <div class="survey-progress" aria-live="polite">
+            <div class="progress-copy">
+              <strong>Respostas informadas</strong>
+              <span id="progressLabel">0 de 25</span>
+            </div>
+            <div class="progress-track" aria-hidden="true">
+              <span id="progressBar"></span>
+            </div>
+          </div>
+          <div id="dimensionsContainer">
+            <p>Carregando...</p>
+          </div>
+          <div class="actions">
+            <button type="submit" class="btn-submit" id="submitButton" disabled>
+              Ver resultado
             </button>
           </div>
-        </div>
-
-        <div class="results-grid" id="resultsGrid">
-          <!-- Resultados renderizados aqui -->
-        </div>
+        </form>
+        <section class="card results-panel hidden" id="resultsPanel" aria-live="polite">
+          <div class="results-header">
+            <div>
+              <p class="eyebrow">Panorama</p>
+              <h2>Resultado por dimensão</h2>
+            </div>
+            <button class="btn-secondary" type="button" id="restartButton">
+              Reiniciar
+            </button>
+          </div>
+          <div class="results-layout">
+            <div class="results-grid" id="resultsGrid"></div>
+            <div class="radar-wrap">
+              <canvas id="radarChart" width="520" height="420" aria-label="Gráfico radar das médias por dimensão"></canvas>
+            </div>
+          </div>
+          <div class="notice" id="natureNotice"></div>
+          <div class="result-actions">
+            <button class="btn-pdf" type="button" id="pdfButton">Exportar PDF</button>
+            <button class="btn-history" type="button" id="historyButton">Ver histórico</button>
+          </div>
+        </section>
+        <section class="card recommendations hidden" id="recommendationsPanel">
+          <p class="eyebrow">Próximos passos</p>
+          <h2>Sugestões de Desenvolvimento</h2>
+          <div id="recommendationsList"></div>
+        </section>
+        <section class="card history-card hidden" id="historyPanel">
+          <div class="results-header">
+            <div>
+              <p class="eyebrow">Registro local</p>
+              <h2>Histórico de testes</h2>
+            </div>
+            <button class="btn-secondary" type="button" id="clearHistoryButton">Limpar histórico</button>
+          </div>
+          <div class="history-list" id="historyList"></div>
+        </section>
+        <section class="print-report" id="printReport" aria-hidden="true">
+          <h1 id="printReportTitle"></h1>
+          <canvas id="printRadarChart" width="720" height="520" aria-label="Gráfico radar das médias por dimensão"></canvas>
+          <div id="printRecommendationsList"></div>
+        </section>
       </section>
-
-      <!-- Seção de recomendações -->
-      <section class="card recommendations hidden" id="recommendationsPanel">
-        <h2>Recomendações</h2>
-        <ul id="recommendationsList">
-          <!-- Recomendações renderizadas aqui -->
-        </ul>
-      </section>
-
-      <!-- Histórico de resultados (vazio) -->
-      <div class="card history-card" id="emptyHistoryCard">
-        <div class="results-header">
-          <h2>Histórico de resultados</h2>
-          <button class="btn-history" type="button" id="historyBtnEmpty">
-            Histórico (7 dias)
-          </button>
-        </div>
-        <div id="historyListEmpty" class="history-list"></div>
-      </div>
-
-      <!-- Painel do histórico -->
-      <section class="card history-card hidden" id="historyPanel">
-        <div class="results-header">
-          <h2>Histórico de resultados</h2>
-          <button class="btn-pdf" type="button" id="clearHistoryBtn">
-            Limpar histórico
-          </button>
-        </div>
-        <div id="historyList" class="history-list"></div>
-      </section>
-    </main>
-
-    <script src="/static/js/main.js"></script>
+    </main><script src="/static/js/main.js"></script>
   </body>
 </html>

@@ -1,0 +1,90 @@
+{
+  "intro": {
+    "titulo": "Instrumento de Autodiagnóstico — Liderança Orientada à Gestão do Conhecimento em Organizações Intensivas em Conhecimento",
+    "origem": "Este instrumento é o Produto Técnico-Tecnológico (PTT) associado à dissertação 'Liderança e Gestão do Conhecimento em Organizações Intensivas em Conhecimento: uma Revisão Sistemática da Literatura sobre sua Intersecção', de Amanda Alves dos Santos Gomes Licas, apresentada ao Programa de Pós-Graduação em Administração de Organizações Inovadoras da Universidade de Marília (UNIMAR), sob orientação da Profa. Dra. Ana Lívia Cazane.",
+    "baseEmpirica": "As cinco dimensões e os 25 itens deste instrumento derivam diretamente das cinco categorias temáticas identificadas na Revisão Sistemática da Literatura e Análise de Conteúdo de 87 artigos publicados nas bases Scopus e Web of Science (2016-2025). Cada item cita a(s) referência(s) da literatura que o embasam.",
+    "publicoAlvo": "Gestores, líderes de equipe e profissionais de RH / desenvolvimento organizacional em organizações intensivas em conhecimento (universidades, centros de pesquisa, hospitais de alta complexidade, empresas de tecnologia, consultorias especializadas e organizações voltadas à inovação).",
+    "comoUsar": "Para cada uma das 25 afirmações, atribua uma nota de 1 a 5 (1 = discordo totalmente ... 5 = concordo totalmente). No final, veja a pontuação média por dimensão, o panorama visual dos resultados e as sugestões de desenvolvimento associadas a cada dimensão.",
+    "naturezaDoInstrumento": "Este instrumento tem caráter reflexivo e não prescritivo: não pressupõe a existência de um estilo de liderança universalmente superior, nem determina um 'nível de maturidade' da organização. Ele apresenta um panorama das práticas percebidas pelos respondentes nas cinco dimensões investigadas, oferecendo um ponto de partida estruturado, ancorado em evidências da literatura, para o diagnóstico e o planejamento de ações de desenvolvimento de liderança voltadas à gestão do conhecimento.",
+    "escala": [
+      {"valor": 1, "label": "Discordo totalmente"},
+      {"valor": 2, "label": "Discordo"},
+      {"valor": 3, "label": "Neutro"},
+      {"valor": 4, "label": "Concordo"},
+      {"valor": 5, "label": "Concordo totalmente"}
+    ]
+  },
+  "dimensions": [
+    {
+      "id": "D1",
+      "name": "1. Liderança como Habilitadora do Compartilhamento e da Confiança",
+      "shortLabel": "D1 - Compartilhamento e Confiança",
+      "items": [
+        {"n": 1, "statement": "As lideranças criam um ambiente psicologicamente seguro, no qual os colaboradores se sentem à vontade para compartilhar ideias, dúvidas e erros.", "reference": "Fullwood; Rowley (2016); Davenport; Prusak (1998)"},
+        {"n": 2, "statement": "Existem normas claras de colaboração e reciprocidade estimuladas pelas lideranças, e não apenas mecanismos formais de compartilhamento.", "reference": "Fullwood; Rowley (2016)"},
+        {"n": 3, "statement": "A liderança orientada ao conhecimento favorece o comprometimento afetivo dos colaboradores com as práticas de gestão do conhecimento.", "reference": "Shamim; Cang; Yu (2017)"},
+        {"n": 4, "statement": "A relação entre líderes e liderados é percebida como de alta qualidade, reduzindo o receio de compartilhar conhecimento especializado.", "reference": "Estudos com base na teoria Leader-Member Exchange (LMX)"},
+        {"n": 5, "statement": "As lideranças demonstram apoio individualizado e constroem relações de confiança como parte de seu estilo de liderança.", "reference": "Bass (1985)"}
+      ],
+      "developmentSuggestion": "Investir em práticas que ampliem a segurança psicológica (ex.: reuniões de retrospectiva sem culpabilização, reconhecimento público de quem compartilha conhecimento) e capacitar lideranças em escuta ativa e construção de confiança."
+    },
+    {
+      "id": "D2",
+      "name": "2. Liderança Estratégica para Inovação e Sustentabilidade",
+      "shortLabel": "D2 - Inovação e Sustentabilidade",
+      "items": [
+        {"n": 1, "statement": "As lideranças reconhecem explicitamente o conhecimento especializado como ativo estratégico para a inovação.", "reference": "Sadeghi; Rad (2018)"},
+        {"n": 2, "statement": "Há incentivo ativo à atualização contínua e à troca de experiências entre profissionais especializados.", "reference": "Tang (2017)"},
+        {"n": 3, "statement": "O compartilhamento do conhecimento é utilizado como mecanismo para impulsionar o desempenho inovador da organização.", "reference": "Zheng; Wu; Xie (2017)"},
+        {"n": 4, "statement": "Existem mecanismos de integração do conhecimento entre diferentes níveis hierárquicos (ex.: gestores intermediários articulando estratégia e conhecimento).", "reference": "Zhang et al. (2023)"},
+        {"n": 5, "statement": "As lideranças conectam explicitamente a gestão do conhecimento a metas de sustentabilidade e vantagem competitiva de longo prazo.", "reference": "Al-Faouri (2023); Juniarti et al. (2024)"}
+      ],
+      "developmentSuggestion": "Incluir explicitamente a gestão do conhecimento nas discussões estratégicas e conectar metas de inovação/sustentabilidade a indicadores de compartilhamento e aplicação de conhecimento."
+    },
+    {
+      "id": "D3",
+      "name": "3. Liderança na Gestão do Comportamento de Conhecimento (Mitigação da Ocultação)",
+      "shortLabel": "D3 - Mitigação da Ocultação",
+      "items": [
+        {"n": 1, "statement": "A organização monitora e busca reduzir comportamentos de retenção deliberada de conhecimento (knowledge hiding).", "reference": "Zahoor et al. (2024)"},
+        {"n": 2, "statement": "As lideranças agem de forma ética, coerente e previsível, o que fortalece a confiança organizacional.", "reference": "Mohsin et al. (2021)"},
+        {"n": 3, "statement": "O ambiente de trabalho não estimula competição interna excessiva pela posse ou controle do conhecimento.", "reference": "Zahoor et al. (2024)"},
+        {"n": 4, "statement": "Fatores relacionais e organizacionais - e não apenas características individuais - são considerados ao lidar com a retenção de conhecimento.", "reference": "Im; Bang (2023)"},
+        {"n": 5, "statement": "As lideranças constroem segurança psicológica e identificação relacional forte com suas equipes.", "reference": "Li; Peng (2025)"}
+      ],
+      "developmentSuggestion": "Revisar sistemas de avaliação e recompensa que estimulem competição interna excessiva; instituir mecanismos de reconhecimento para quem compartilha conhecimento (não apenas para quem o detém)."
+    },
+    {
+      "id": "D4",
+      "name": "4. Liderança Distribuída e Colaboração em Contextos Complexos",
+      "shortLabel": "D4 - Liderança Distribuída",
+      "items": [
+        {"n": 1, "statement": "A responsabilidade pela liderança é compartilhada entre múltiplos atores, e não concentrada em uma única posição hierárquica.", "reference": "Cannatelli et al. (2016)"},
+        {"n": 2, "statement": "Existem mecanismos de coordenação horizontal entre diferentes áreas, equipes ou especialistas.", "reference": "Rose; Jones; Furneaux (2016)"},
+        {"n": 3, "statement": "Decisões complexas são construídas coletivamente, integrando múltiplas perspectivas especializadas.", "reference": "Chen; Yu; Fu (2025)"},
+        {"n": 4, "statement": "O conhecimento circula entre fronteiras hierárquicas e funcionais, sem barreiras rígidas de acesso.", "reference": "Cannatelli et al. (2016)"},
+        {"n": 5, "statement": "A organização utiliza conhecimento externo (parcerias, redes) de forma colaborativa para inovar.", "reference": "Rose; Jones; Furneaux (2016)"}
+      ],
+      "developmentSuggestion": "Criar instâncias formais de coordenação horizontal (comunidades de prática, grupos interdisciplinares) e distribuir responsabilidades de liderança em projetos complexos."
+    },
+    {
+      "id": "D5",
+      "name": "5. Liderança como Promotora da Cultura de Aprendizagem Organizacional",
+      "shortLabel": "D5 - Cultura de Aprendizagem",
+      "items": [
+        {"n": 1, "statement": "A aprendizagem contínua está incorporada aos valores e às rotinas organizacionais, e não depende apenas de iniciativas pontuais.", "reference": "Fashami; Babaei (2017)"},
+        {"n": 2, "statement": "As lideranças disponibilizam recursos e legitimam práticas voltadas à aprendizagem organizacional.", "reference": "Zhang et al. (2023)"},
+        {"n": 3, "statement": "A cultura organizacional valoriza colaboração, confiança e experimentação.", "reference": "Senge (2010)"},
+        {"n": 4, "statement": "A gestão do conhecimento é institucionalizada, não dependendo exclusivamente de indivíduos específicos.", "reference": "Terra (2000)"},
+        {"n": 5, "statement": "Tecnologias digitais são usadas para apoiar - e não substituir - os processos humanos de aprendizagem e compartilhamento.", "reference": "Shamim; Cang; Yu (2017)"}
+      ],
+      "developmentSuggestion": "Institucionalizar rotinas de aprendizagem (mentoria, documentação de lições aprendidas, tempo protegido para capacitação) e usar tecnologia como apoio, não substituto, das interações humanas."
+    }
+  ],
+  "interpretationBands": [
+    {"min": 1.0, "max": 2.0, "label": "Baixa presença percebida"},
+    {"min": 2.1, "max": 3.0, "label": "Presença percebida moderada"},
+    {"min": 3.1, "max": 4.0, "label": "Presença percebida elevada"},
+    {"min": 4.1, "max": 5.0, "label": "Presença percebida muito elevada"}
+  ]
+}
