@@ -3,6 +3,13 @@ Configurações e dados estáticos da aplicação.
 Responsabilidade: Armazenar todas as constantes, dados e configurações.
 """
 
+import json
+from pathlib import Path
+
+
+with (Path(__file__).with_name('instrument.json')).open(encoding='utf-8') as file:
+    INSTRUMENT = json.load(file)
+
 PRESENTATION = [
 	'Origem do instrumento:',
     'Este instrumento é o Produto Técnico-Tecnológico (PTT) associado à dissertação '
@@ -75,3 +82,36 @@ LEVELS = [
 ]
 
 APP_TITLE = 'Autodiagnóstico de Liderança em Gestão do Conhecimento'
+
+# Aliases legados mantidos para o serviço existente e para consumidores da API.
+APP_TITLE = INSTRUMENT['intro']['titulo']
+PRESENTATION = [
+    INSTRUMENT['intro']['origem'],
+    INSTRUMENT['intro']['baseEmpirica'],
+    INSTRUMENT['intro']['publicoAlvo'],
+    INSTRUMENT['intro']['comoUsar'],
+    INSTRUMENT['intro']['naturezaDoInstrumento'],
+]
+DIMENSIONS = {
+    dimension['name']: [
+        {
+            'numero': item['n'],
+            'questao': item['statement'],
+            'referencia': item['reference'],
+        }
+        for item in dimension['items']
+    ]
+    for dimension in INSTRUMENT['dimensions']
+}
+RECOMMENDATIONS = {
+    dimension['name']: dimension['developmentSuggestion']
+    for dimension in INSTRUMENT['dimensions']
+}
+LEVELS = [
+    {
+        'min': band['min'],
+        'max': band['max'],
+        'label': band['label'],
+    }
+    for band in INSTRUMENT['interpretationBands']
+]
