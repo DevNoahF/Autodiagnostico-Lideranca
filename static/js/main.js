@@ -1,353 +1,91 @@
-/**
- * Autodiagnóstico de Liderança - Frontend
- * Responsabilidade: Gerenciar interface, requisições e renderização
- */
+let appData;
+const HISTORY_KEY = 'autodiagnostico-lideranca-history';
 
-// ============================================================================
-// CONSTANTES E VARIÁVEIS GLOBAIS
-// ============================================================================
-
-const STORAGE_KEY = 'autodiagnostico_history_v1';
-const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
-
-let appData = {
-  titulo: '',
-  presentation: [],
-  dimensions: {},
-  recommendations: {}
-};
-
-let currentResults = null;
-
-// ============================================================================
-// INICIALIZAÇÃO
-// ============================================================================
-
-document.addEventListener('DOMContentLoaded', () => {
-  loadApplicationData();
-  setupEventListeners();
-});
-
-// ============================================================================
-// CARREGAR DADOS DA API
-// ============================================================================
+document.addEventListener('DOMContentLoaded', loadApplicationData);
 
 async function loadApplicationData() {
   try {
     const response = await fetch('/api/data');
     if (!response.ok) throw new Error('Erro ao carregar dados');
-
     appData = await response.json();
-    
-    // Renderizar elementos
-    document.getElementById('pageTitle').textContent = appData.titulo;
-    renderPresentation();
-    renderDimensions();
-    renderEmptyHistory();
-  } catch (error) {
-    console.error('Erro ao carregar dados:', error);
-    showError('Erro ao carregar a aplicação');
-  }
+    document.title = appData.intro.titulo;
+    document.getElementById('pageTitle').textContent = appData.intro.titulo;
+    renderIntro(); renderDimensions();
+    document.getElementById('surveyForm').addEventListener('submit', showResults);
+    document.getElementById('restartButton').addEventListener('click', restartAssessment);
+    document.getElementById('pdfButton').addEventListener('click', exportPdf);
+    document.getElementById('historyButton').addEventListener('click', toggleHistory);
+    document.getElementById('clearHistoryButton').addEventListener('click', clearHistory);
+    renderHistory();
+  } catch (error) { console.error(error); showError('Erro ao carregar a aplicação'); }
 }
 
-// ============================================================================
-// RENDERIZAR APRESENTAÇÃO
-// ============================================================================
-
-function renderPresentation() {
-  const section = document.getElementById('presentationSection');
-  if (!section || !appData.presentation.length) return;
-
-  section.innerHTML = appData.presentation
-    .map(item => `<p>${escapeHtml(item)}</p>`)
-    .join('');
+function renderIntro() {
+  const intro = appData.intro;
+  document.getElementById('presentationSection').innerHTML = `<p>${escapeHtml(intro.origem)}</p><p>${escapeHtml(intro.baseEmpirica)}</p><p>${escapeHtml(intro.publicoAlvo)}</p><p>${escapeHtml(intro.comoUsar)}</p><div class="notice"><strong>Natureza do instrumento</strong><p>${escapeHtml(intro.naturezaDoInstrumento)}</p></div>`;
 }
-
-// ============================================================================
-// RENDERIZAR DIMENSÕES E QUESTÕES
-// ============================================================================
 
 function renderDimensions() {
-  const container = document.getElementById('dimensionsContainer');
-  if (!container || !Object.keys(appData.dimensions).length) return;
-
-  const scaleLegend = `
-    <div class="scale-legend">
-      <strong>Escala:</strong>
-      <span>1 = Discordo totalmente</span>
-      <span>2 = Discordo</span>
-      <span>3 = Neutro</span>
-      <span>4 = Concordo</span>
-      <span>5 = Concordo totalmente</span>
-    </div>
-  `;
-
-  container.innerHTML = scaleLegend + Object.entries(appData.dimensions)
-    .map(([dimensionName, items]) => `
-      <section class="card dimension-block">
-        <div class="dimension-header">
-          <h2>${escapeHtml(dimensionName)}</h2>
-        </div>
-
-        ${items.map(item => `
-          <div class="question-item">
-            <div class="question-text">
-              <strong>${item.numero}.</strong>
-              <span>${escapeHtml(item.questao)}</span>
-            </div>
-
-            <div class="options">
-              ${[1, 2, 3, 4, 5].map(score => `
-                <label>
-                  <input
-                    type="radio"
-                    name="${escapeHtml(dimensionName)}::${item.numero}"
-                    value="${score}"
-                    required
-                  />
-                  <span>${score}</span>
-                </label>
-              `).join('')}
-            </div>
-          </div>
-        `).join('')}
-      </section>
-    `)
-    .join('');
+  const scale = appData.intro.escala;
+  const legend = `<div class="scale-legend"><strong>Escala de resposta</strong>${scale.map(item => `<span>${item.valor} = ${escapeHtml(item.label)}</span>`).join('')}</div>`;
+  const dimensions = appData.dimensions.map(dimension => `<section class="card dimension-block"><div class="dimension-header"><div><h2>${escapeHtml(cleanDimensionName(dimension.name))}</h2></div><span class="score-badge">5 afirmações</span></div>${dimension.items.map(item => `<fieldset class="question-item"><legend><strong>${item.n}.</strong> ${escapeHtml(item.statement)}</legend><div class="options">${scale.map(option => `<label><input type="radio" name="${dimension.id}-${item.n}" value="${option.valor}" required><span>${option.valor}</span><small>${escapeHtml(option.label)}</small></label>`).join('')}</div></fieldset>`).join('')}</section>`).join('');
+  document.getElementById('dimensionsContainer').innerHTML = legend + dimensions;
+  document.getElementById('surveyForm').addEventListener('change', updateSubmitState);
 }
 
-// ============================================================================
-// EVENT LISTENERS
-// ============================================================================
-
-function setupEventListeners() {
-  // Envio do formulário
-  const form = document.getElementById('surveyForm');
-  if (form) {
-    form.addEventListener('submit', handleFormSubmit);
-  }
-
-  // Botões de histórico
-  const historyBtn = document.getElementById('historyBtn');
-  const historyBtnEmpty = document.getElementById('historyBtnEmpty');
-  if (historyBtn) historyBtn.addEventListener('click', toggleHistory);
-  if (historyBtnEmpty) historyBtnEmpty.addEventListener('click', toggleHistory);
-
-  // Limpar histórico
-  const clearBtn = document.getElementById('clearHistoryBtn');
-  if (clearBtn) clearBtn.addEventListener('click', confirmAndClearHistory);
+function updateSubmitState() {
+  const answered = document.querySelectorAll('#dimensionsContainer input:checked').length;
+  const totalQuestions = document.querySelectorAll('#dimensionsContainer input[type="radio"]')
+    .length / appData.intro.escala.length;
+  const percentage = totalQuestions ? answered / totalQuestions * 100 : 0;
+  document.getElementById('submitButton').disabled = answered !== totalQuestions;
+  document.getElementById('progressLabel').textContent = `${answered} de ${totalQuestions} respondidas`;
+  document.getElementById('progressBar').style.width = `${percentage}%`;
 }
 
-// ============================================================================
-// PROCESSAR ENVIO DO FORMULÁRIO
-// ============================================================================
-
-async function handleFormSubmit(event) {
+function showResults(event) {
   event.preventDefault();
-
-  try {
-    // Coletar dados do formulário
-    const formData = new FormData(document.getElementById('surveyForm'));
-
-    // Enviar para API
-    const response = await fetch('/api/evaluate', {
-      method: 'POST',
-      body: formData
-    });
-
-    if (!response.ok) throw new Error('Erro ao processar avaliação');
-
-    const data = await response.json();
-
-    if (data.success) {
-      currentResults = data.results;
-      
-      // Salvar no histórico
-      saveCurrentResults();
-      
-      // Renderizar resultados
-      showResults(currentResults);
-      
-      // Rolar até resultados
-      scrollToResults();
-    }
-  } catch (error) {
-    console.error('Erro ao processar formulário:', error);
-    showError('Erro ao processar a avaliação');
-  }
+  const totalQuestions = document.querySelectorAll('#dimensionsContainer input[type="radio"]')
+    .length / appData.intro.escala.length;
+  if (document.querySelectorAll('#dimensionsContainer input:checked').length !== totalQuestions) return;
+  const results = appData.dimensions.map(dimension => {
+    const scores = dimension.items.map(item => Number(document.querySelector(`input[name="${dimension.id}-${item.n}"]:checked`).value));
+    const average = Math.round((scores.reduce((sum, score) => sum + score, 0) / scores.length) * 100) / 100;
+    const band = appData.interpretationBands.find(item => average >= item.min && average <= item.max);
+    return { ...dimension, average, interpretation: band.label };
+  });
+  document.getElementById('resultsGrid').innerHTML = results.map(result => `<article class="result-item"><span class="label">${escapeHtml(cleanDimensionName(result.shortLabel))}</span><strong>${result.average.toFixed(2)}</strong><small>${escapeHtml(result.interpretation)}</small></article>`).join('');
+  const suggestionsHtml = results.map(result => `<article class="suggestion"><h3>${escapeHtml(cleanDimensionName(result.shortLabel))}</h3><p>${escapeHtml(result.developmentSuggestion)}</p></article>`).join('');
+  document.getElementById('recommendationsList').innerHTML = suggestionsHtml;
+  document.getElementById('printReportTitle').textContent = appData.intro.titulo;
+  document.getElementById('printRecommendationsList').innerHTML = suggestionsHtml;
+  document.getElementById('natureNotice').textContent = appData.intro.naturezaDoInstrumento;
+  document.getElementById('resultsPanel').classList.remove('hidden'); document.getElementById('recommendationsPanel').classList.remove('hidden');
+  drawRadar(results, 'radarChart'); drawRadar(results, 'printRadarChart'); saveHistory(results); renderHistory(); document.getElementById('resultsPanel').scrollIntoView({ behavior: 'smooth' });
 }
 
-// ============================================================================
-// RENDERIZAR RESULTADOS
-// ============================================================================
-
-function showResults(results) {
-  // Mostrar painel de resultados
-  const resultsPanel = document.getElementById('resultsPanel');
-  const recommendationsPanel = document.getElementById('recommendationsPanel');
-  
-  if (resultsPanel) resultsPanel.classList.remove('hidden');
-  if (recommendationsPanel) recommendationsPanel.classList.remove('hidden');
-
-  // Renderizar grid de resultados
-  const resultsGrid = document.getElementById('resultsGrid');
-  if (resultsGrid) {
-    resultsGrid.innerHTML = Object.entries(results)
-      .map(([dimensionName, item]) => `
-        <div class="result-item">
-          <span class="label">${escapeHtml(dimensionName)}</span>
-          <strong>${item.media}</strong>
-          <small>${escapeHtml(item.nivel)}</small>
-        </div>
-      `)
-      .join('');
-  }
-
-  // Renderizar recomendações
-  const recommendationsList = document.getElementById('recommendationsList');
-  if (recommendationsList) {
-    recommendationsList.innerHTML = Object.entries(results)
-      .map(([dimensionName, item]) => `
-        <li>
-          <strong>${escapeHtml(dimensionName)}:</strong>
-          ${escapeHtml(item.recomendacao)}
-        </li>
-      `)
-      .join('');
-  }
+function drawRadar(results, canvasId) {
+  const canvas = document.getElementById(canvasId); const context = canvas.getContext('2d');
+  const centerX = canvas.width / 2, centerY = canvas.height / 2, radius = 150;
+  context.clearRect(0, 0, canvas.width, canvas.height); context.font = '12px Georgia';
+  for (let ring = 1; ring <= 5; ring += 1) drawPolygon(context, results.length, centerX, centerY, radius * ring / 5, false);
+  results.forEach((result, index) => { const angle = -Math.PI / 2 + index * 2 * Math.PI / results.length; const x = centerX + Math.cos(angle) * radius; const y = centerY + Math.sin(angle) * radius; context.beginPath(); context.moveTo(centerX, centerY); context.lineTo(x, y); context.strokeStyle = '#d5d9d0'; context.stroke(); context.fillStyle = '#4b6b52'; context.fillText(cleanDimensionName(result.shortLabel), centerX + Math.cos(angle) * (radius + 22) - 34, centerY + Math.sin(angle) * (radius + 22)); });
+  drawPolygon(context, results.length, centerX, centerY, radius, true, results.map(result => result.average / 5));
 }
 
-// ============================================================================
-// HISTÓRICO
-// ============================================================================
-
-function getHistory() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    const now = Date.now();
-    return parsed.filter(item => now - item.savedAt <= SEVEN_DAYS_MS);
-  } catch (error) {
-    console.error('Erro ao ler histórico:', error);
-    return [];
-  }
+function drawPolygon(context, count, centerX, centerY, radius, fill, values) {
+  context.beginPath();
+  for (let index = 0; index < count; index += 1) { const angle = -Math.PI / 2 + index * 2 * Math.PI / count; const value = values ? values[index] : 1; const x = centerX + Math.cos(angle) * radius * value; const y = centerY + Math.sin(angle) * radius * value; index ? context.lineTo(x, y) : context.moveTo(x, y); }
+  context.closePath(); context.strokeStyle = fill ? '#c45b3c' : '#d5d9d0'; context.stroke(); if (fill) { context.fillStyle = 'rgba(196, 91, 60, .22)'; context.fill(); }
 }
 
-function saveCurrentResults() {
-  if (!currentResults || Object.keys(currentResults).length === 0) {
-    return;
-  }
-
-  const history = getHistory();
-  const snapshot = {
-    savedAt: Date.now(),
-    results: currentResults,
-    label: new Date().toLocaleString('pt-BR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    })
-  };
-
-  history.push(snapshot);
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(history.slice(-20)));
-
-  // Atualizar histórico vazio
-  renderEmptyHistory();
-}
-
-function renderEmptyHistory() {
-  const history = getHistory();
-  const container = document.getElementById('historyListEmpty');
-  
-  if (!container) return;
-
-  if (!history.length) {
-    container.innerHTML = '<p class="empty-history">Nenhum resultado salvo nos últimos 7 dias.</p>';
-    return;
-  }
-
-  renderHistoryItems(container, history);
-}
-
-function renderHistoryList() {
-  const history = getHistory();
-  const container = document.getElementById('historyList');
-  
-  if (!container) return;
-
-  if (!history.length) {
-    container.innerHTML = '<p class="empty-history">Nenhum resultado salvo nos últimos 7 dias.</p>';
-    return;
-  }
-
-  renderHistoryItems(container, history);
-}
-
-function renderHistoryItems(container, history) {
-  container.innerHTML = history
-    .slice()
-    .reverse()
-    .map(item => {
-      const values = Object.entries(item.results)
-        .map(([key, value]) => `<li><strong>${escapeHtml(key)}:</strong> ${value.media} (${escapeHtml(value.nivel)})</li>`)
-        .join('');
-      
-      return `
-        <div class="history-item">
-          <div class="history-date">${escapeHtml(item.label)}</div>
-          <ul>${values}</ul>
-        </div>
-      `;
-    })
-    .join('');
-}
-
-function toggleHistory() {
-  const panel = document.getElementById('historyPanel');
-  if (!panel) return;
-  
-  panel.classList.toggle('hidden');
-  renderHistoryList();
-}
-
-function confirmAndClearHistory() {
-  if (confirm('Tem certeza que deseja limpar o histórico? Esta ação não pode ser desfeita.')) {
-    localStorage.removeItem(STORAGE_KEY);
-    renderHistoryList();
-    renderEmptyHistory();
-  }
-}
-
-// ============================================================================
-// UTILITÁRIOS
-// ============================================================================
-
-function escapeHtml(text) {
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
-}
-
-function showError(message) {
-  // Criar elemento de erro temporário
-  const errorDiv = document.createElement('div');
-  errorDiv.className = 'error-message';
-  errorDiv.textContent = message;
-  document.body.insertBefore(errorDiv, document.body.firstChild);
-
-  // Remover após 5 segundos
-  setTimeout(() => {
-    errorDiv.remove();
-  }, 5000);
-}
-
-function scrollToResults() {
-  const resultsPanel = document.getElementById('resultsPanel');
-  if (resultsPanel) {
-    resultsPanel.scrollIntoView({ behavior: 'smooth' });
-  }
-}
+function restartAssessment() { document.getElementById('surveyForm').reset(); document.getElementById('resultsPanel').classList.add('hidden'); document.getElementById('recommendationsPanel').classList.add('hidden'); updateSubmitState(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+function cleanDimensionName(value) { return value.replace(/^D\d+\s*-\s*/, '').replace(/^\d+\.\s*/, ''); }
+function exportPdf() { window.print(); }
+function getHistory() { try { return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]'); } catch (error) { return []; } }
+function saveHistory(results) { const history = getHistory(); history.unshift({ date: new Date().toISOString(), scores: results.map(result => ({ label: cleanDimensionName(result.shortLabel), average: result.average })) }); localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(0, 20))); }
+function renderHistory() { const history = getHistory(); const list = document.getElementById('historyList'); list.innerHTML = history.length ? history.map(item => `<article class="history-item"><div class="history-date">${new Date(item.date).toLocaleString('pt-BR')}</div><ul>${item.scores.map(score => `<li>${escapeHtml(score.label)}: <strong>${Number(score.average).toFixed(2)}</strong></li>`).join('')}</ul></article>`).join('') : '<p class="empty-history">Nenhum teste salvo neste navegador.</p>'; }
+function toggleHistory() { const panel = document.getElementById('historyPanel'); panel.classList.toggle('hidden'); if (!panel.classList.contains('hidden')) { renderHistory(); panel.scrollIntoView({ behavior: 'smooth' }); } }
+function clearHistory() { localStorage.removeItem(HISTORY_KEY); renderHistory(); }
+function escapeHtml(value) { const div = document.createElement('div'); div.textContent = value; return div.innerHTML; }
+function showError(message) { const error = document.createElement('div'); error.className = 'error-message'; error.textContent = message; document.body.prepend(error); }

@@ -7,7 +7,7 @@ Princípio: Single Responsibility (apenas coordena requisição/resposta e retor
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 
-from config.data import PRESENTATION, DIMENSIONS, RECOMMENDATIONS, APP_TITLE
+from config.data import INSTRUMENT
 from services.assessment_service import AssessmentService
 
 # Criar router
@@ -25,14 +25,7 @@ async def get_data():
     Returns:
         dict com titulo, presentation, dimensions, recommendations
     """
-    return JSONResponse(
-        content={
-            'titulo': APP_TITLE,
-            'presentation': PRESENTATION,
-            'dimensions': DIMENSIONS,
-            'recommendations': RECOMMENDATIONS,
-        }
-    )
+    return JSONResponse(content=INSTRUMENT)
 
 
 @router.post('/api/evaluate')
