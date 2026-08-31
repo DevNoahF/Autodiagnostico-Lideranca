@@ -3,3 +3,6 @@ README_REFACTORING.md
 REFACTORING_DOCUMENTATION.py
 base/
 inspect_excel.py
+.md
+venv
+__pycache__
