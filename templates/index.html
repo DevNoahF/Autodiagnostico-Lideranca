@@ -1,90 +1,111 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Formulario | Autodiagnóstico de Liderança</title>
-    <link rel="stylesheet" href="/static/style.css" />
-  </head>
-  <body>
-    <header class="topbar">
-      <div class="container topbar-row">
-        <div>
-          <h1>Formulário de autodiagnóstico</h1>
-        </div>
-        <nav class="page-nav">
-          <a href="/projeto">Inicio</a>
-          <a href="/equipe">Sobre a Equipe</a>
-          <a href="/autodiagnostico" aria-current="page">Formulário</a>
-        </nav>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Formulario | Autodiagnóstico de Liderança</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="/static/style.css" />
+  <script>
+    (function () {
+      var savedTheme = localStorage.getItem('theme');
+      if (savedTheme) {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+      } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    })();
+  </script>
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="container topbar-row">
+      <div>
+        <h1>Formulário de autodiagnóstico</h1>
       </div>
-    </header>
-    <main class="container content-main">
-      <section class="form-session">
-        <h2 id="pageTitle">Carregando...</h2>
-        <section class="intro card" id="presentationSection"></section>
-        <form class="survey-form" id="surveyForm">
-          <div class="survey-progress" aria-live="polite">
-            <div class="progress-copy">
-              <strong>Respostas informadas</strong>
-              <span id="progressLabel">0 de 25</span>
-            </div>
-            <div class="progress-track" aria-hidden="true">
-              <span id="progressBar"></span>
-            </div>
+      <div class="topbar-actions">
+        <nav class="page-nav">
+          <a href="/inicio">Inicio</a>
+          <a href="/equipe">Sobre a Equipe</a>
+          <a href="/formulario" aria-current="page">Formulário</a>
+        </nav>
+        <button id="themeToggle" class="theme-toggle" type="button" aria-label="Alternar tema">🌙 Modo Escuro</button>
+      </div>
+    </div>
+  </header>
+  <main class="container content-main">
+    <section class="form-session">
+      <h2 id="pageTitle">Carregando...</h2>
+      <section class="intro card" id="presentationSection"></section>
+      <form class="survey-form" id="surveyForm">
+        <div class="survey-progress" aria-live="polite">
+          <div class="progress-copy">
+            <strong>Respostas informadas</strong>
+            <span id="progressLabel">0 de 25</span>
           </div>
-          <div id="dimensionsContainer">
-            <p>Carregando...</p>
+          <div class="progress-track" aria-hidden="true">
+            <span id="progressBar"></span>
           </div>
-          <div class="actions">
-            <button type="submit" class="btn-submit" id="submitButton" disabled>
-              Ver resultado
-            </button>
+        </div>
+        <div id="dimensionsContainer">
+          <p>Carregando...</p>
+        </div>
+        <div class="actions">
+          <button type="submit" class="btn-submit" id="submitButton" disabled>
+            Ver resultado
+          </button>
+        </div>
+      </form>
+      <section class="card results-panel hidden" id="resultsPanel" aria-live="polite">
+        <div class="results-header">
+          <div>
+            <p class="eyebrow">Panorama</p>
+            <h2>Resultado por dimensão</h2>
           </div>
-        </form>
-        <section class="card results-panel hidden" id="resultsPanel" aria-live="polite">
-          <div class="results-header">
-            <div>
-              <p class="eyebrow">Panorama</p>
-              <h2>Resultado por dimensão</h2>
-            </div>
-            <button class="btn-secondary" type="button" id="restartButton">
-              Reiniciar
-            </button>
+          <button class="btn-secondary" type="button" id="restartButton">
+            Reiniciar
+          </button>
+        </div>
+        <div class="results-layout">
+          <div class="results-grid" id="resultsGrid"></div>
+          <div class="radar-wrap">
+            <canvas id="radarChart" width="520" height="420"
+              aria-label="Gráfico radar das médias por dimensão"></canvas>
           </div>
-          <div class="results-layout">
-            <div class="results-grid" id="resultsGrid"></div>
-            <div class="radar-wrap">
-              <canvas id="radarChart" width="520" height="420" aria-label="Gráfico radar das médias por dimensão"></canvas>
-            </div>
-          </div>
-          <div class="notice" id="natureNotice"></div>
-          <div class="result-actions">
-            <button class="btn-pdf" type="button" id="pdfButton">Exportar PDF</button>
-            <button class="btn-history" type="button" id="historyButton">Ver histórico</button>
-          </div>
-        </section>
-        <section class="card recommendations hidden" id="recommendationsPanel">
-          <p class="eyebrow">Próximos passos</p>
-          <h2>Sugestões de Desenvolvimento</h2>
-          <div id="recommendationsList"></div>
-        </section>
-        <section class="card history-card hidden" id="historyPanel">
-          <div class="results-header">
-            <div>
-              <p class="eyebrow">Registro local</p>
-              <h2>Histórico de testes</h2>
-            </div>
-            <button class="btn-secondary" type="button" id="clearHistoryButton">Limpar histórico</button>
-          </div>
-          <div class="history-list" id="historyList"></div>
-        </section>
-        <section class="print-report" id="printReport" aria-hidden="true">
-          <h1 id="printReportTitle"></h1>
-          <canvas id="printRadarChart" width="720" height="520" aria-label="Gráfico radar das médias por dimensão"></canvas>
-          <div id="printRecommendationsList"></div>
-        </section>
+        </div>
+        <div class="notice" id="natureNotice"></div>
+        <div class="result-actions">
+          <button class="btn-pdf" type="button" id="pdfButton">Exportar PDF</button>
+          <button class="btn-history" type="button" id="historyButton">Ver histórico</button>
+        </div>
       </section>
-    </main><script src="/static/js/main.js"></script>
-  </body>
+      <section class="card recommendations hidden" id="recommendationsPanel">
+        <p class="eyebrow">Próximos passos</p>
+        <h2>Sugestões de Desenvolvimento</h2>
+        <div id="recommendationsList"></div>
+      </section>
+      <section class="card history-card hidden" id="historyPanel">
+        <div class="results-header">
+          <div>
+            <p class="eyebrow">Registro local</p>
+            <h2>Histórico de testes</h2>
+          </div>
+          <button class="btn-secondary" type="button" id="clearHistoryButton">Limpar histórico</button>
+        </div>
+        <div class="history-list" id="historyList"></div>
+      </section>
+      <section class="print-report" id="printReport" aria-hidden="true">
+        <h1 id="printReportTitle"></h1>
+        <canvas id="printRadarChart" width="720" height="520"
+          aria-label="Gráfico radar das médias por dimensão"></canvas>
+        <div id="printRecommendationsList"></div>
+      </section>
+    </section>
+  </main>
+  <script src="/static/js/main.js"></script>
+</body>
+
 </html>

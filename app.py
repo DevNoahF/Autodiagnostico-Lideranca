@@ -37,7 +37,7 @@ async def context_page():
     return FileResponse(BASE_DIR / 'templates' / 'project.html')
 
 
-@app.get('/projeto')
+@app.get('/inicio')
 async def project_page():
     """Retorna a página de apresentação do projeto."""
     return FileResponse(BASE_DIR / 'templates' / 'project.html')
@@ -49,7 +49,7 @@ async def team_page():
     return FileResponse(BASE_DIR / 'templates' / 'team.html')
 
 
-@app.get('/autodiagnostico')
+@app.get('/formulario')
 async def assessment_page():
     """Retorna a ferramenta interativa de autodiagnóstico."""
     return FileResponse(BASE_DIR / 'templates' / 'index.html')

@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', loadApplicationData);
 
 async function loadApplicationData() {
   try {
+    initThemeToggle();
     const response = await fetch('/api/data');
     if (!response.ok) throw new Error('Erro ao carregar dados');
     appData = await response.json();
@@ -43,6 +44,39 @@ function updateSubmitState() {
   document.getElementById('progressBar').style.width = `${percentage}%`;
 }
 
+let lastResultsData = null;
+
+function initThemeToggle() {
+  const toggleBtn = document.getElementById('themeToggle');
+  if (!toggleBtn) return;
+
+  function updateBtnUI(theme) {
+    toggleBtn.innerHTML = theme === 'dark' ? '☀️ Modo Claro' : '🌙 Modo Escuro';
+  }
+
+  const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+  updateBtnUI(currentTheme);
+
+  toggleBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const currentScrollY = window.scrollY || window.pageYOffset;
+
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const nextTheme = isDark ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', nextTheme);
+    localStorage.setItem('theme', nextTheme);
+    updateBtnUI(nextTheme);
+
+    if (lastResultsData) {
+      drawRadar(lastResultsData, 'radarChart');
+      drawRadar(lastResultsData, 'printRadarChart');
+    }
+
+    window.scrollTo({ top: currentScrollY, behavior: 'instant' });
+  });
+}
+
 function showResults(event) {
   event.preventDefault();
   const totalQuestions = document.querySelectorAll('#dimensionsContainer input[type="radio"]')
@@ -54,6 +88,7 @@ function showResults(event) {
     const band = appData.interpretationBands.find(item => average >= item.min && average <= item.max);
     return { ...dimension, average, interpretation: band.label };
   });
+  lastResultsData = results;
   document.getElementById('resultsGrid').innerHTML = results.map(result => `<article class="result-item"><span class="label">${escapeHtml(cleanDimensionName(result.shortLabel))}</span><strong>${result.average.toFixed(2)}</strong><small>${escapeHtml(result.interpretation)}</small></article>`).join('');
   const suggestionsHtml = results.map(result => `<article class="suggestion"><h3>${escapeHtml(cleanDimensionName(result.shortLabel))}</h3><p>${escapeHtml(result.developmentSuggestion)}</p></article>`).join('');
   document.getElementById('recommendationsList').innerHTML = suggestionsHtml;
@@ -65,18 +100,97 @@ function showResults(event) {
 }
 
 function drawRadar(results, canvasId) {
-  const canvas = document.getElementById(canvasId); const context = canvas.getContext('2d');
-  const centerX = canvas.width / 2, centerY = canvas.height / 2, radius = 150;
-  context.clearRect(0, 0, canvas.width, canvas.height); context.font = '12px Georgia';
-  for (let ring = 1; ring <= 5; ring += 1) drawPolygon(context, results.length, centerX, centerY, radius * ring / 5, false);
-  results.forEach((result, index) => { const angle = -Math.PI / 2 + index * 2 * Math.PI / results.length; const x = centerX + Math.cos(angle) * radius; const y = centerY + Math.sin(angle) * radius; context.beginPath(); context.moveTo(centerX, centerY); context.lineTo(x, y); context.strokeStyle = '#d5d9d0'; context.stroke(); context.fillStyle = '#4b6b52'; context.fillText(cleanDimensionName(result.shortLabel), centerX + Math.cos(angle) * (radius + 22) - 34, centerY + Math.sin(angle) * (radius + 22)); });
-  drawPolygon(context, results.length, centerX, centerY, radius, true, results.map(result => result.average / 5));
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const context = canvas.getContext('2d');
+  const centerX = canvas.width / 2;
+  const centerY = canvas.height / 2;
+  const radius = Math.min(centerX, centerY) * 0.65;
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+
+  context.clearRect(0, 0, canvas.width, canvas.height);
+  context.font = '600 12px "Plus Jakarta Sans", "Inter", sans-serif';
+  context.textAlign = 'center';
+  context.textBaseline = 'middle';
+
+  const gridColor = isDark ? 'rgba(255, 255, 255, 0.15)' : '#e2e8f0';
+  const textColor = isDark ? '#f1f5f9' : '#0b1e36';
+
+  for (let ring = 1; ring <= 5; ring += 1) {
+    drawPolygon(context, results.length, centerX, centerY, (radius * ring) / 5, false, null, gridColor);
+  }
+
+  results.forEach((result, index) => {
+    const angle = -Math.PI / 2 + (index * 2 * Math.PI) / results.length;
+    const x = centerX + Math.cos(angle) * radius;
+    const y = centerY + Math.sin(angle) * radius;
+
+    context.beginPath();
+    context.moveTo(centerX, centerY);
+    context.lineTo(x, y);
+    context.strokeStyle = gridColor;
+    context.lineWidth = 1.2;
+    context.stroke();
+
+    const labelRadius = radius + 26;
+    const labelX = centerX + Math.cos(angle) * labelRadius;
+    const labelY = centerY + Math.sin(angle) * labelRadius;
+    context.fillStyle = textColor;
+    context.fillText(cleanDimensionName(result.shortLabel), labelX, labelY);
+  });
+
+  drawPolygon(
+    context,
+    results.length,
+    centerX,
+    centerY,
+    radius,
+    true,
+    results.map(result => result.average / 5),
+    gridColor,
+    isDark
+  );
 }
 
-function drawPolygon(context, count, centerX, centerY, radius, fill, values) {
+function drawPolygon(context, count, centerX, centerY, radius, fill, values, gridColor, isDark) {
   context.beginPath();
-  for (let index = 0; index < count; index += 1) { const angle = -Math.PI / 2 + index * 2 * Math.PI / count; const value = values ? values[index] : 1; const x = centerX + Math.cos(angle) * radius * value; const y = centerY + Math.sin(angle) * radius * value; index ? context.lineTo(x, y) : context.moveTo(x, y); }
-  context.closePath(); context.strokeStyle = fill ? '#c45b3c' : '#d5d9d0'; context.stroke(); if (fill) { context.fillStyle = 'rgba(196, 91, 60, .22)'; context.fill(); }
+  const points = [];
+  for (let index = 0; index < count; index += 1) {
+    const angle = -Math.PI / 2 + (index * 2 * Math.PI) / count;
+    const value = values ? values[index] : 1;
+    const x = centerX + Math.cos(angle) * radius * value;
+    const y = centerY + Math.sin(angle) * radius * value;
+    points.push({ x, y });
+    index ? context.lineTo(x, y) : context.moveTo(x, y);
+  }
+  context.closePath();
+
+  if (fill) {
+    const strokeColor = isDark ? '#3b82f6' : '#1d4ed8';
+    const fillColor = isDark ? 'rgba(59, 130, 246, 0.25)' : 'rgba(29, 78, 216, 0.18)';
+    const dotColor = isDark ? '#60a5fa' : '#2563eb';
+    const dotBorder = isDark ? '#ffffff' : '#0b1e36';
+
+    context.strokeStyle = strokeColor;
+    context.lineWidth = 2.5;
+    context.stroke();
+    context.fillStyle = fillColor;
+    context.fill();
+
+    points.forEach(point => {
+      context.beginPath();
+      context.arc(point.x, point.y, 4.5, 0, 2 * Math.PI);
+      context.fillStyle = dotColor;
+      context.fill();
+      context.strokeStyle = dotBorder;
+      context.lineWidth = 1.5;
+      context.stroke();
+    });
+  } else {
+    context.strokeStyle = gridColor || '#e2e8f0';
+    context.lineWidth = 1.2;
+    context.stroke();
+  }
 }
 
 function restartAssessment() { document.getElementById('surveyForm').reset(); document.getElementById('resultsPanel').classList.add('hidden'); document.getElementById('recommendationsPanel').classList.add('hidden'); updateSubmitState(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
