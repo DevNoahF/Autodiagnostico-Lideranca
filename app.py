@@ -1,8 +1,3 @@
-"""
-Aplicação FastAPI para Autodiagnóstico de Liderança em Gestão do Conhecimento.
-Responsabilidade: Inicializar a aplicação e montar as rotas.
-"""
-
 from pathlib import Path
 from fastapi import FastAPI
 from fastapi.responses import FileResponse
@@ -49,7 +44,7 @@ async def team_page():
     return FileResponse(BASE_DIR / 'templates' / 'team.html')
 
 
-@app.get('/formulario')
+@app.get('/instrumento-de-autodiagnostico')
 async def assessment_page():
     """Retorna a ferramenta interativa de autodiagnóstico."""
     return FileResponse(BASE_DIR / 'templates' / 'index.html')

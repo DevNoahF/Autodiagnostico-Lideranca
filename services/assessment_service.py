@@ -95,7 +95,7 @@ class AssessmentService:
         
         Args:
             dimension_name: Nome da dimensão
-            form_data: Dados do formulário com scores
+            form_data: Dados do instrumento com scores
             
         Returns:
             Score médio arredondado para 2 casas decimais
@@ -142,7 +142,7 @@ class AssessmentService:
         Calcula resultados completos da avaliação para todas as dimensões.
         
         Args:
-            form_data: Dados do formulário com respostas do usuário
+            form_data: Dados do instrumento com respostas do usuário
             
         Returns:
             Dicionário com resultados por dimensão

@@ -31,7 +31,7 @@ async def get_data():
 @router.post('/api/evaluate')
 async def evaluate(request: Request):
     """
-    Processa formulário enviado e retorna resultados da avaliação.
+    Processa instrumento de autodiagnóstico enviado e retorna resultados da avaliação.
     
     Recebe form-data com scores das dimensões.
     Retorna resultados calculados em JSON.

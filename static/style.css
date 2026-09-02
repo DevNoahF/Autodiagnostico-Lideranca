@@ -282,7 +282,7 @@ main {
 }
 
 /* --------------------------------------------------------------------------
-   Formulário de Avaliação e Escala Likert
+   Instrumento de Autodiagnóstico e Escala Likert
    -------------------------------------------------------------------------- */
 .survey-progress {
   position: sticky;
@@ -802,6 +802,17 @@ button:disabled {
   font-weight: 700;
   text-decoration: none;
   transition: background 0.15s ease, color 0.15s ease;
+}
+
+.member-social a i {
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+.member-social a img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
 }
 
 .member-social a:hover {
