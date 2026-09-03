@@ -18,6 +18,7 @@ async function loadApplicationData() {
     document.getElementById('historyButton').addEventListener('click', toggleHistory);
     document.getElementById('clearHistoryButton').addEventListener('click', clearHistory);
     renderHistory();
+    autoGenerateAssessment();
   } catch (error) { console.error(error); showError('Erro ao carregar a aplicação'); }
 }
 
@@ -42,6 +43,23 @@ function updateSubmitState() {
   document.getElementById('submitButton').disabled = answered !== totalQuestions;
   document.getElementById('progressLabel').textContent = `${answered} de ${totalQuestions} respondidas`;
   document.getElementById('progressBar').style.width = `${percentage}%`;
+}
+
+// FUNÇÃO PARA GERAR O PDF AUTOMATICO, ELE CLICA EM TODOS OS 25 QUADRADINHOS PRA VOCE| url: (/instrumento-de-autodiagnostico?gerar=1&pdf=1)
+function autoGenerateAssessment() {
+  const parameters = new URLSearchParams(window.location.search);
+  const shouldGenerate = parameters.get('demo') === '1' || parameters.get('gerar') === '1';
+  if (!shouldGenerate) return;
+
+  document.querySelectorAll('#dimensionsContainer input[type="radio"]').forEach(input => {
+    if (input.value === '3') input.checked = true;
+  });
+  updateSubmitState();
+  showResults({ preventDefault() {} });
+
+  if (parameters.get('print') === '1' || parameters.get('pdf') === '1') {
+    setTimeout(() => window.print(), 400);
+  }
 }
 
 let lastResultsData = null;
@@ -114,7 +132,7 @@ function drawRadar(results, canvasId) {
   context.textBaseline = 'middle';
 
   const gridColor = isDark ? 'rgba(255, 255, 255, 0.15)' : '#e2e8f0';
-  const textColor = isDark ? '#f1f5f9' : '#0b1e36';
+  const textColor = canvasId === 'printRadarChart' ? '#000000' : (isDark ? '#f1f5f9' : '#0b1e36');
 
   for (let ring = 1; ring <= 5; ring += 1) {
     drawPolygon(context, results.length, centerX, centerY, (radius * ring) / 5, false, null, gridColor);

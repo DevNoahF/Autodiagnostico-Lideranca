@@ -5,9 +5,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title> Equipe | Liderança e Gestão do Conhecimento</title>
+  <link rel="icon" type="image/png" href="/images/logoIcon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="/static/style.css" />
+  <link rel="stylesheet" href="/static/style.css?v=3" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
   <script>
     (function () {
@@ -39,8 +40,13 @@
   </header>
   <main class="container content-main team-page">
     <p class="section-lead">Conheça as pessoas que participam da construção deste Projeto:</p>
-    <div class="team-grid">
-      <article class="team-member">
+    <section class="team-carousel" aria-label="Pessoas que participaram do projeto">
+      <button class="carousel-control carousel-control-prev" type="button" aria-label="Pessoa anterior">
+        <i class="bi bi-arrow-left" aria-hidden="true"></i>
+      </button>
+      <div class="team-carousel-viewport">
+        <div class="team-grid">
+          <article class="team-member">
         <div class="portrait has-image"
           style="background-image: url('/images/profiles/anaPhoto.png'); background-position: center 25%;" role="img"
           aria-label="Foto de Ana Livia Cazane"><span>Foto</span></div>
@@ -67,8 +73,8 @@
                 class="bi bi-envelope-fill"></i></a>
           </nav>
         </div>
-      </article>
-      <article class="team-member">
+          </article>
+          <article class="team-member">
         <div class="portrait has-image" style="background-image: url('/images/profiles/rafaPhoto.png');" role="img"
           aria-label="Foto de Rafael Gutierres Castanha"><span>Foto</span></div>
         <div class="member-content">
@@ -97,8 +103,8 @@
                 class="bi bi-envelope-fill"></i></a>
           </nav>
         </div>
-      </article>
-      <article class="team-member">
+          </article>
+          <article class="team-member">
         <div class="portrait has-image" style="background-image: url('/images/profiles/noahPhoto.png');" role="img"
           aria-label="Foto de Noah Franco"><span>Foto</span></div>
         <div class="member-content">
@@ -115,11 +121,16 @@
                 class="bi bi-envelope-fill"></i></a>
           </nav>
         </div>
-      </article>
-    </div>
+          </article>
+        </div>
+      </div>
+      <button class="carousel-control carousel-control-next" type="button" aria-label="Próxima pessoa">
+        <i class="bi bi-arrow-right" aria-hidden="true"></i>
+      </button>
+    </section>
 
   </main>
-  <script src="/static/js/team.js"></script>
+  <script src="/static/js/team.js?v=2"></script>
 </body>
 
 </html>
