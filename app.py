@@ -19,34 +19,34 @@ templates = Jinja2Templates(directory=str(BASE_DIR / 'templates'))
 assessment_service = AssessmentService()
 
 
-# Rotas para servir as páginas HTML
+# Rotas para servir a aplicação SPA
 @app.get('/')
 async def root():
-    """Retorna a página de apresentação do projeto."""
-    return FileResponse(BASE_DIR / 'templates' / 'project.html')
+    """Retorna a aplicação SPA."""
+    return FileResponse(BASE_DIR / 'templates' / 'index.html')
 
 
 @app.get('/lideranca-e-gc')
 async def context_page():
-    """Mantém a rota de contexto apontando para a apresentação."""
-    return FileResponse(BASE_DIR / 'templates' / 'project.html')
+    """Retorna a aplicação SPA."""
+    return FileResponse(BASE_DIR / 'templates' / 'index.html')
 
 
 @app.get('/inicio')
 async def project_page():
-    """Retorna a página de apresentação do projeto."""
-    return FileResponse(BASE_DIR / 'templates' / 'project.html')
+    """Retorna a aplicação SPA."""
+    return FileResponse(BASE_DIR / 'templates' / 'index.html')
 
 
 @app.get('/equipe')
 async def team_page():
-    """Retorna a página sobre a equipe."""
-    return FileResponse(BASE_DIR / 'templates' / 'team.html')
+    """Retorna a aplicação SPA."""
+    return FileResponse(BASE_DIR / 'templates' / 'index.html')
 
 
 @app.get('/instrumento-de-autodiagnostico')
 async def assessment_page():
-    """Retorna a ferramenta interativa de autodiagnóstico."""
+    """Retorna a aplicação SPA."""
     return FileResponse(BASE_DIR / 'templates' / 'index.html')
 
 
@@ -59,4 +59,4 @@ app.include_router(router, tags=['api'])
 
 if __name__ == '__main__':
     import uvicorn
-    uvicorn.run('app:app', host='127.0.0.1', port=8000, reload=True)
+    uvicorn.run('app:app', host='127.0.0.1', port=8080, reload=True)
