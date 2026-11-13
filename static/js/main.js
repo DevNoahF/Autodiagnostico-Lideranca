@@ -116,7 +116,7 @@ function initTabNavigation() {
    -------------------------------------------------------------------------- */
 async function loadApplicationData() {
   try {
-    const response = await fetch('/api/data');
+    const response = await fetch('/data/instrument.json');
     if (!response.ok) throw new Error('Erro ao carregar dados');
     appData = await response.json();
 

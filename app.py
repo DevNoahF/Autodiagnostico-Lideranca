@@ -13,6 +13,7 @@ BASE_DIR = Path(__file__).resolve().parent
 app = FastAPI(title=APP_TITLE)
 app.mount('/static', StaticFiles(directory=str(BASE_DIR / 'static')), name='static')
 app.mount('/images', StaticFiles(directory=str(BASE_DIR / 'templates' / 'images')), name='images')
+app.mount('/data', StaticFiles(directory=str(BASE_DIR / 'config')), name='data')
 templates = Jinja2Templates(directory=str(BASE_DIR / 'templates'))
 
 # Inicializar serviço de avaliação (injeção de dependência)

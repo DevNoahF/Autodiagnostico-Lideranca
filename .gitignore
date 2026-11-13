@@ -6,3 +6,5 @@ inspect_excel.py
 .md
 venv
 __pycache__
+dist/
+.netlify/
