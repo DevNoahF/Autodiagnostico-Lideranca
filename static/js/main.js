@@ -157,7 +157,7 @@ function renderIntro() {
   const intro = appData.intro;
   const presEl = document.getElementById('presentationSection');
   if (presEl) {
-    presEl.innerHTML = `<p>${escapeHtml(intro.origem)}</p><p>${escapeHtml(intro.baseEmpirica)}</p><p>${escapeHtml(intro.publicoAlvo)}</p><p>${escapeHtml(intro.comoUsar)}</p><div class="notice"><strong>Natureza do instrumento</strong><p>${escapeHtml(intro.naturezaDoInstrumento)}</p></div>`;
+    presEl.innerHTML = `<p>${escapeHtml(intro.origem)}</p><p>${escapeHtml(intro.baseEmpirica)}</p><p>${escapeHtml(intro.publicoAlvo)}</p><p>${escapeHtml(intro.comoUsar)}</p>`;
   }
 }
 
